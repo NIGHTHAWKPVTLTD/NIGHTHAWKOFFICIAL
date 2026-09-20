@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NIGHT HAWK ESPORTS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        esports: { dark: '#0b0f19', panel: '#1e293b', accent: '#f97316', emerald: '#10b981', cyan: '#06b6d4', purple: '#a855f7' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-white antialiased overflow-hidden selection:bg-esports-accent selection:text-white">
+
+    <!-- App Container -->
+    <div id="app" class="relative w-full max-w-md mx-auto h-screen flex flex-col shadow-2xl overflow-hidden bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+        
+        <div id="toast-container" class="absolute top-4 left-0 right-0 z-50 flex flex-col items-center gap-2 pointer-events-none px-4"></div>
+
+<!-- AUTH VIEW -->
+        <div id="auth-view" class="h-full w-full flex flex-col justify-center px-6 py-8 hidden slide-up relative z-10">
+            <div class="text-center mb-10">
+                <!-- Added overflow-hidden and replaced the <i> tag with an <img> tag for your logo -->
+                <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(249,115,22,0.4)] overflow-hidden p-1">
+                    <!-- PUT YOUR LOGO IMAGE URL IN THE SRC ATTRIBUTE BELOW -->
+                    <img src="https://www.image2url.com/r2/default/images/1789923158340-8f64e182-f668-4da9-9eb8-0f0b33a30981.jpg" alt="App Logo" class="w-full h-full object-cover rounded-full">
+                </div>
+                <h1 class="text-4xl font-gaming font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300 uppercase glow-text">NIGHT HAWK</h1>
+                <p class="text-gray-400 mt-2 tracking-widest text-sm uppercase">Elite Esports Platform</p>
+            </div>
+            
+            <form id="auth-form" class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-esports-accent to-red-500"></div>
+                <!-- Changed default title to Sign Up mode -->
+                <h2 id="auth-title" class="text-2xl font-bold mb-6 font-gaming">Enlist Now</h2>
+                
+                <!-- Removed 'hidden' class so it shows by default -->
+                <div id="register-fields" class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1 tracking-wider">In-Game Name (IGN)</label>
+                    <input type="text" id="auth-ign" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:outline-none focus:border-esports-accent focus:bg-black/60 transition-all" placeholder="e.g. ᴴᵂᴷ NinjaPro">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1 tracking-wider">Secure Email</label>
+                    <input type="email" id="auth-email" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:outline-none focus:border-esports-accent focus:bg-black/60 transition-all" placeholder="player@nighthawk.com">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1 tracking-wider">Passcode</label>
+                    <input type="password" id="auth-pass" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:outline-none focus:border-esports-accent focus:bg-black/60 transition-all" placeholder="••••••••">
+                </div>
+                
+                <!-- Changed default button text -->
+                <button type="submit" id="auth-btn" class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming font-bold py-3.5 rounded-lg shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all uppercase tracking-widest">
+                    Create Profile
+                </button>
+                
+                <!-- Changed default toggle text -->
+                <p class="text-center text-sm text-gray-400 mt-5 cursor-pointer hover:text-white transition" id="toggle-auth">
+                    Return to base? <span class="text-esports-accent font-bold">Login</span>
+                </p>
+            </form>
+        </div>
+        
+        <!-- MAIN LAYOUT -->
+        <div id="main-layout" class="h-full flex flex-col hidden fade-in z-10 relative">
+            
+            <!-- Header -->
+            <header class="glass-panel border-b border-gray-700/50 p-4 flex justify-between items-center z-20">
+                <div class="font-gaming font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300 flex items-center gap-2">
+                    <i class="fa-solid fa-hawk text-orange-500"></i>NIGHT HAWK
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-black/50 px-4 py-1.5 rounded-full border border-gray-600/50 flex items-center gap-2 shadow-inner">
+                        <i class="fa-solid fa-coins text-yellow-400"></i>
+                        <span id="header-balance" class="font-bold text-sm tracking-wide">₹0.00</span>
+                    </div>
+                    <!-- Notification Bell -->
+                    <button onclick="window.openNotifModal()" aria-label="Notifications" class="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center hover:bg-blue-500/20 transition relative">
+                        <i class="fa-solid fa-bell text-sm"></i>
+                        <span id="notif-badge" class="hidden absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-gray-900 shadow-md"></span>
+                    </button>
+                    <!-- Logout -->
+                    <button id="logout-btn" aria-label="Log Out" class="w-8 h-8 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center hover:bg-red-500/20 hover:text-red-300 transition"><i class="fa-solid fa-power-off text-sm"></i></button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <main class="flex-1 overflow-y-auto custom-scrollbar p-4 relative" id="main-content">
+                
+                <!-- ====== USER VIEWS ====== -->
+                <div id="view-user-matches" class="view-section">
+                    <div class="glass-panel flex rounded-xl p-1 mb-5 border border-gray-700/50">
+                        <button class="flex-1 py-2 text-sm font-bold rounded-lg bg-orange-500 text-white shadow-md match-filter transition-all" data-filter="Upcoming">Upcoming</button>
+                        <button class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-400 hover:text-white match-filter transition-all" data-filter="Live">Live</button>
+                        <button class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-400 hover:text-white match-filter transition-all" data-filter="Completed">Completed</button>
+                    </div>
+                    <div id="user-matches-list" class="space-y-5 pb-24"></div>
+                </div>
+
+                <div id="view-user-wallet" class="view-section hidden">
+                    <div class="relative rounded-2xl p-6 border border-gray-600/50 shadow-2xl mb-6 text-center overflow-hidden bg-gradient-to-br from-gray-800/80 to-black">
+                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-yellow-500/10 rounded-full blur-2xl"></div>
+                        <p class="text-gray-400 text-xs uppercase tracking-widest font-semibold">Total Funds</p>
+                        <h2 class="text-5xl font-gaming font-black text-white mt-2 mb-6 drop-shadow-lg" id="wallet-balance-display">₹0.00</h2>
+                        <div class="flex gap-4 relative z-10">
+                            <button onclick="openModal('deposit-modal')" class="flex-1 bg-gradient-to-r from-emerald-400 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 text-gray-900 font-bold py-2.5 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] transition"><i class="fa-solid fa-plus-circle mr-2"></i>Deposit</button>
+                            <button onclick="openModal('withdraw-modal')" class="flex-1 glass-panel hover:bg-gray-700/50 text-white font-bold py-2.5 rounded-xl transition"><i class="fa-solid fa-money-bill-transfer mr-2"></i>Withdraw</button>
+                        </div>
+                    </div>
+                    <h3 class="font-gaming font-bold text-sm tracking-widest text-gray-400 mb-4 uppercase flex items-center gap-2"><i class="fa-solid fa-history"></i> Ledger</h3>
+                    <div id="user-tx-list" class="space-y-3 pb-24"></div>
+                </div>
+
+                <div id="view-user-profile" class="view-section hidden">
+                    <div class="glass-panel rounded-2xl p-6 border border-gray-600/50 mb-6 text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
+                        <div class="w-24 h-24 bg-gradient-to-br from-gray-800 to-black rounded-full mx-auto flex items-center justify-center border-[3px] border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.3)] mb-4 relative z-10">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=hawk&backgroundColor=transparent" alt="Avatar" class="w-16 h-16">
+                        </div>
+                        <h2 class="text-2xl font-gaming font-bold" id="profile-ign">Player Name</h2>
+                        <p class="text-xs text-gray-400 mt-2 font-mono bg-black/40 inline-block px-3 py-1 rounded-md" id="profile-uid">UID: -----</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass-panel p-5 rounded-2xl text-center border-t border-t-white/10">
+                            <i class="fa-solid fa-gamepad text-orange-500 text-2xl mb-2"></i>
+                            <p class="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Engagements</p>
+                            <p class="text-3xl font-gaming font-black text-white mt-1" id="profile-matches-count">0</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl text-center border-t border-t-white/10">
+                            <i class="fa-solid fa-trophy text-yellow-400 text-2xl mb-2"></i>
+                            <p class="text-gray-400 text-[10px] uppercase font-bold tracking-wider">Total Loot</p>
+                            <p class="text-3xl font-gaming font-black text-emerald-400 mt-1 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" id="profile-winnings">₹0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====== ADMIN / STAFF DASHBOARD ====== -->
+                <div id="view-manage-dash" class="view-section hidden">
+                    <div class="flex justify-between items-center mb-5">
+                        <h2 class="font-gaming text-xl font-bold flex items-center gap-2" id="dash-title"><i class="fa-solid fa-satellite-dish text-blue-400"></i> Command Center</h2>
+                        <!-- Notify Button for Admin -->
+                        <button id="admin-notify-btn" onclick="openModal('admin-notif-modal')" class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/50 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider hidden"><i class="fa-solid fa-bullhorn"></i> Broadcast</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass-panel p-5 rounded-2xl border-l-[3px] border-l-blue-500">
+                            <i class="fa-solid fa-users text-gray-400 mb-2 text-xl"></i>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Operatives</p>
+                            <h3 class="text-3xl font-gaming font-black mt-1" id="stat-users">0</h3>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl border-l-[3px] border-l-orange-500">
+                            <i class="fa-solid fa-crosshairs text-gray-400 mb-2 text-xl"></i>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Missions</p>
+                            <h3 class="text-3xl font-gaming font-black mt-1" id="stat-matches">0</h3>
+                        </div>
+                        <!-- Finance Only visible to Admin -->
+                        <div id="admin-revenue-card" class="glass-panel p-5 rounded-2xl border-t border-t-white/10 col-span-2 text-center relative overflow-hidden hidden">
+                            <div class="absolute inset-0 bg-emerald-500/5"></div>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Recent Revenue </p>
+                            <h3 class="text-4xl font-gaming font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.4)]" id="stat-revenue">₹0.00</h3>
+                        </div>
+                    </div>
+
+                    <!-- Admin Settings Card -->
+                    <div id="admin-settings-card" class="glass-panel p-5 rounded-2xl border border-white/10 mb-6 hidden">
+                        <h3 class="font-gaming text-sm font-bold mb-3 text-cyan-400 flex items-center gap-2"><i class="fa-solid fa-cogs"></i> Payment Settings</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">UPI ID for Deposits</label>
+                                <input type="text" id="admin-set-upi" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-2 text-white text-sm outline-none mt-1 focus:border-cyan-500">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">QR Code Image URL (Optional)</label>
+                                <input type="text" id="admin-set-qr" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-2 text-white text-sm outline-none mt-1 focus:border-cyan-500" placeholder="https://example.com/qr.png">
+                            </div>
+                            <button onclick="window.savePlatformSettings()" class="w-full bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-400 border border-cyan-500/50 font-bold py-2.5 rounded-xl transition uppercase text-xs tracking-wider mt-2 shadow-[0_0_10px_rgba(6,182,212,0.2)]">Update Settings</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====== ADMIN / STAFF MATCHES ====== -->
+                <div id="view-manage-matches" class="view-section hidden">
+                    <!-- CREATE MATCH BUTTON -->
+                    <button onclick="window.openCreateMatchModal()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white font-gaming font-bold py-3.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.4)] mb-6 uppercase tracking-wider"><i class="fa-solid fa-plus-square mr-2"></i> Deploy Mission</button>
+                    <div id="manage-matches-list" class="space-y-4 pb-24"></div>
+                </div>
+
+                <!-- ====== ADMIN FINANCE ====== -->
+                <div id="view-admin-finance" class="view-section hidden">
+                    <h2 class="font-gaming text-xl font-bold mb-4 flex items-center gap-2 text-emerald-400"><i class="fa-solid fa-vault"></i> Finance Queue</h2>
+                    <div id="admin-finance-list" class="space-y-4 pb-24"></div>
+                </div>
+            </main>
+
+            <!-- Bottom Navigation (User) -->
+            <nav id="user-nav" class="glass-panel border-t border-gray-700/50 flex justify-around p-1 pb-safe z-30 absolute bottom-0 w-full hidden rounded-t-2xl">
+                <button class="nav-btn active flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-white" data-target="view-user-matches">
+                    <i class="fa-solid fa-gamepad text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Matches</span>
+                </button>
+                <button class="nav-btn flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-white" data-target="view-user-wallet">
+                    <i class="fa-solid fa-wallet text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Wallet</span>
+                </button>
+                <button class="nav-btn flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-white" data-target="view-user-profile">
+                    <i class="fa-solid fa-user-astronaut text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Profile</span>
+                </button>
+            </nav>
+
+            <!-- Bottom Navigation (Admin) -->
+            <nav id="admin-nav" class="glass-panel border-t border-cyan-900/50 flex justify-around p-1 pb-safe z-30 absolute bottom-0 w-full hidden rounded-t-2xl shadow-[0_-5px_20px_rgba(6,182,212,0.1)]">
+                <button class="nav-btn active flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-cyan-400" data-target="view-manage-dash">
+                    <i class="fa-solid fa-radar text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Radar</span>
+                </button>
+                <button class="nav-btn flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-cyan-400" data-target="view-manage-matches">
+                    <i class="fa-solid fa-crosshairs text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Ops</span>
+                </button>
+                <button class="nav-btn flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-cyan-400" data-target="view-admin-finance">
+                    <i class="fa-solid fa-money-bill-transfer text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Vault</span>
+                </button>
+            </nav>
+
+            <!-- Bottom Navigation (Staff) -->
+            <nav id="staff-nav" class="glass-panel border-t border-purple-900/50 flex justify-around p-1 pb-safe z-30 absolute bottom-0 w-full hidden rounded-t-2xl shadow-[0_-5px_20px_rgba(168,85,247,0.1)]">
+                <button class="nav-btn active flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-purple-400" data-target="view-manage-dash">
+                    <i class="fa-solid fa-clipboard-list text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Overview</span>
+                </button>
+                <button class="nav-btn flex-1 flex flex-col items-center py-3 text-gray-500 hover:text-purple-400" data-target="view-manage-matches">
+                    <i class="fa-solid fa-calendar-check text-xl mb-1.5"></i><span class="text-[10px] font-bold uppercase tracking-wider">Manage</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- ====== MODALS ====== -->
+        
+        <!-- Notifications Modal -->
+        <div id="notif-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-blue-500/30 slide-up shadow-2xl flex flex-col max-h-[80vh]">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-gaming font-bold text-white flex items-center gap-2"><i class="fa-solid fa-satellite-dish text-blue-400"></i> Intel Feed</h3>
+                    <button onclick="closeModal('notif-modal')" aria-label="Close Notifications" class="text-gray-400 hover:text-white bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <!-- OS Notification Enable Button (Hidden by default, shown if permission is missing) -->
+                <button id="enable-os-notif-btn" onclick="window.requestOSNotification()" class="hidden w-full mb-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-[10px] font-bold py-2.5 rounded-lg border border-blue-500/50 transition uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                    <i class="fa-solid fa-bell"></i> Enable System Notifications
+                </button>
+
+                <div id="notif-list" class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-2">
+                    <!-- Notifications will inject here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Send Notification Modal -->
+        <div id="admin-notif-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-indigo-500/30 slide-up shadow-[0_0_30px_rgba(99,102,241,0.15)] my-auto">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-gaming font-bold text-indigo-400"><i class="fa-solid fa-tower-broadcast"></i> Broadcast</h3>
+                    <button onclick="closeModal('admin-notif-modal')" aria-label="Close Modal" class="text-gray-400 hover:text-white bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="admin-notif-form" class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Target Operative (Select ALL for global)</label>
+                        <select id="notif-target-uid" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-indigo-500 outline-none mt-1 text-sm custom-scrollbar">
+                            <option value="ALL">-- ALL OPERATIVES (GLOBAL) --</option>
+                            <!-- User options will be dynamically injected here -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Alert Title</label>
+                        <input type="text" id="notif-title" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-indigo-500 outline-none mt-1 text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Message Body</label>
+                        <textarea id="notif-message" required rows="3" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-indigo-500 outline-none mt-1 text-sm resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl mt-4 shadow-[0_0_15px_rgba(99,102,241,0.3)] transition uppercase tracking-wider text-sm">Send Transmission</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Deposit Modal -->
+        <div id="deposit-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm max-h-screen overflow-y-auto">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-emerald-500/30 slide-up shadow-[0_0_30px_rgba(16,185,129,0.1)] my-auto">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-gaming font-bold text-emerald-400">Add Funds</h3>
+                    <button onclick="closeModal('deposit-modal')" aria-label="Close Modal" class="text-gray-400 hover:text-white bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="bg-black/60 p-4 rounded-xl mb-5 text-center border border-white/5">
+                    <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Scan or Send to:</p>
+                    
+                    <img id="deposit-qr-display" src="" alt="Payment QR Code" class="w-56 h-56 object-contain mx-auto mb-3 hidden rounded-xl border border-emerald-500/30 p-2 bg-white shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                    
+                    <div class="flex items-center justify-center gap-2 group cursor-pointer mb-2" onclick="copyToClipboard('deposit-upi-display')">
+                        <p class="font-gaming font-bold text-white text-lg tracking-wider bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text text-transparent" id="deposit-upi-display">nighthawk09@slc</p>
+                        <i class="fa-regular fa-copy text-gray-500 group-hover:text-emerald-400 transition"></i>
+                    </div>
+
+                    <div class="inline-block bg-emerald-900/40 text-emerald-400 text-[10px] px-2 py-1 rounded font-bold uppercase">Min Deposit: ₹10</div>
+                </div>
+                <form id="deposit-form" class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Amount (₹)</label>
+                        <input type="number" id="dep-amount" min="10" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-emerald-500 outline-none transition mt-1 font-mono text-lg">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Payment App</label>
+                        <select id="dep-method" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-emerald-500 outline-none transition mt-1">
+                            <option value="UPI">UPI (Direct)</option>
+                            <option value="PhonePe">PhonePe / GPay / Paytm</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">UTR / Ref No.</label>
+                        <input type="text" id="dep-utr" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-emerald-500 outline-none transition mt-1 font-mono text-sm placeholder-gray-600" placeholder="12-digit transaction ID">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-gray-900 font-gaming font-black py-3.5 rounded-xl mt-4 shadow-[0_0_15px_rgba(16,185,129,0.3)] uppercase tracking-wider">Confirm Transfer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Withdraw Modal -->
+        <div id="withdraw-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm max-h-screen overflow-y-auto">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-gray-600/50 slide-up shadow-2xl my-auto">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-gaming font-bold text-white">Extract Funds</h3>
+                    <button onclick="closeModal('withdraw-modal')" aria-label="Close Modal" class="text-gray-400 hover:text-white bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p class="bg-orange-900/20 text-orange-400 text-xs text-center p-2 rounded-lg font-bold mb-5 border border-orange-500/20"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Min Withdrawal: ₹15</p>
+                <form id="withdraw-form" class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Amount (₹)</label>
+                        <input type="number" id="with-amount" min="15" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-orange-500 outline-none transition mt-1 font-mono text-lg">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Method</label>
+                        <select id="with-method" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-orange-500 outline-none transition mt-1">
+                            <option value="UPI">UPI ID</option>
+                            <option value="PlayCode">Google Play Redeem Code</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Destination</label>
+                        <input type="text" id="with-dest" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-orange-500 outline-none transition mt-1 font-mono text-sm placeholder-gray-600" placeholder="UPI ID or Mobile No.">
+                    </div>
+                    <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-gaming font-bold py-3.5 rounded-xl border border-white/20 mt-4 transition uppercase tracking-wider">Execute Request</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Match Modal (Admin/Staff) -->
+        <div id="create-match-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-blue-500/30 slide-up max-h-[90vh] overflow-y-auto custom-scrollbar shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                <div class="flex justify-between items-center mb-5 sticky top-0 bg-[#151b2b]/90 backdrop-blur-md p-2 -mx-2 rounded-lg z-10 border border-white/5">
+                    <h3 class="text-xl font-gaming font-bold text-blue-400" id="match-modal-title">Deploy Mission</h3>
+                    <button onclick="closeModal('create-match-modal')" aria-label="Close Modal" class="text-gray-400 hover:text-white bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="manage-match-form" class="space-y-4">
+                    <input type="hidden" id="match-id">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Operation Title</label>
+                        <input type="text" id="m-title" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Map</label>
+                            <select id="m-map" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1">
+                                <option value="Bermuda">Bermuda</option><option value="Purgatory">Purgatory</option><option value="Kalahari">Kalahari</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Mode</label>
+                            <select id="m-type" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1">
+                                <option value="Solo">Solo</option><option value="Duo">Duo</option><option value="Squad">Squad</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Entry Fee (₹)</label>
+                            <input type="number" id="m-fee" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Prize (₹)</label>
+                            <input type="number" id="m-prize" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1 font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Total Slots</label>
+                            <input type="number" id="m-slots" value="48" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Status</label>
+                            <select id="m-status" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1 font-bold">
+                                <option value="Upcoming" class="text-orange-500">Upcoming</option>
+                                <option value="Live" class="text-emerald-500">Live</option>
+                                <option value="Completed" class="text-gray-400">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Schedule (T-Minus)</label>
+                        <input type="datetime-local" id="m-time" required class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-blue-500 outline-none mt-1 font-mono text-sm">
+                    </div>
+                    
+                    <div class="pt-4 mt-2 border-t border-white/10 relative">
+                        <span class="absolute -top-3 left-3 bg-[#131926] px-2 text-[10px] font-bold text-purple-400 uppercase tracking-widest">Secret Comm Link</span>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Room ID</label>
+                                <input type="text" id="m-roomid" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-purple-500 outline-none mt-1 font-mono text-sm">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Password</label>
+                                <input type="text" id="m-roompass" class="w-full bg-black/40 border border-gray-600/50 rounded-lg p-3 text-white focus:border-purple-500 outline-none mt-1 font-mono text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-gaming font-bold py-3.5 rounded-xl mt-6 shadow-[0_0_15px_rgba(79,70,229,0.4)] uppercase tracking-widest">Save Config</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Room Details Modal (User) -->
+        <div id="room-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="glass-panel w-full max-w-sm rounded-3xl p-6 border border-cyan-500/40 slide-up text-center shadow-[0_0_30px_rgba(6,182,212,0.15)] relative overflow-hidden">
+                <div class="absolute -top-16 -left-16 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl"></div>
+                
+                <div class="w-16 h-16 bg-gradient-to-br from-gray-800 to-black rounded-full mx-auto flex items-center justify-center border-2 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] mb-4 relative z-10">
+                    <i class="fa-solid fa-key text-2xl text-cyan-400"></i>
+                </div>
+                <h3 class="text-2xl font-gaming font-bold mb-5 text-white">Classified Access</h3>
+                
+                <div class="bg-black/50 p-4 rounded-xl border border-white/5 mb-5 flex flex-col gap-4 relative z-10">
+                    <div class="flex justify-between items-center group cursor-pointer" onclick="copyToClipboard('r-id-display')">
+                        <div class="text-left">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Room ID</p>
+                            <p class="text-xl font-mono font-bold tracking-wider text-white mt-1" id="r-id-display">-----</p>
+                        </div>
+                        <i class="fa-regular fa-copy text-gray-500 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="border-t border-white/10 pt-4 flex justify-between items-center group cursor-pointer" onclick="copyToClipboard('r-pass-display')">
+                        <div class="text-left">
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Password</p>
+                            <p class="text-xl font-mono font-bold tracking-wider text-white mt-1" id="r-pass-display">-----</p>
+                        </div>
+                        <i class="fa-regular fa-copy text-gray-500 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                </div>
+                <button onclick="closeModal('room-modal')" class="w-full glass-panel hover:bg-white/10 text-white font-gaming font-bold py-3 rounded-xl border border-white/10 uppercase tracking-widest relative z-10 transition">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
